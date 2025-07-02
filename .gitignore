@@ -30,7 +30,7 @@ InfraVision/server/feedback_uploads/
 InfraVision/server/feedback.json
 
 # ML model weights (if not versioning large files)
-*.bin
+
 
 # Vite/React cache
 .vite

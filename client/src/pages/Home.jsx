@@ -176,34 +176,29 @@ const Home = () => {
     img.onload = async () => {
       try {
         const results = await model.predict(img);
-        console.log('[handlePredict] Model prediction results:', results);
         const best = results.reduce((a, b) => (a.probability > b.probability ? a : b));
         const pred = { label: best.className, confidence: (best.probability * 100).toFixed(2) };
-        console.log('[handlePredict] Best prediction:', pred);
         setPrediction(pred);
         setIsGenerating(true);
-        const requestBody = {
-          label: pred.label,
-          latitude: latitude,
-          longitude: longitude,
-          userName,
-          userDetails,
-          imageBase64,
-          localLang
-        };
-        console.log('[handlePredict] Sending request to', COMPLAINT_API_URL, 'with body:', requestBody);
         const res = await fetch(COMPLAINT_API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(requestBody)
+          body: JSON.stringify({
+            label: pred.label,
+            latitude: latitude,
+            longitude: longitude,
+            userName,
+            userDetails,
+            imageBase64,
+            localLang
+          })
         });
         const data = await res.json();
-        console.log('[handlePredict] Complaint API response:', data);
+        console.log('Complaint API response:', data);
         setEnglishComplaint(data.englishComplaint || '');
         setLocalComplaint(data.localComplaint || '');
         setComplaint(data.englishComplaint || data.complaint || data.complaintText || 'No complaint generated.');
       } catch (err) {
-        console.error('[handlePredict] Error:', err);
         setPrediction({ label: 'Unknown' });
         setError('Failed to analyze image or generate complaint.');
       }
@@ -255,27 +250,23 @@ const Home = () => {
     setInput('');
     setLoading(true);
     try {
-      const requestBody = {
-        messages: newMessages,
-        imageBase64,
-        prediction,
-        location: currentLocation,
-        complaintPrompt: prediction ? getComplaintPrompt(prediction, currentLocation) : '',
-        localLang,
-        userName,
-        placeName
-      };
-      console.log('[sendChatWithLocation] Sending request to', CHAT_HELP_API_URL, 'with body:', requestBody);
       const res = await fetch(CHAT_HELP_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify({
+          messages: newMessages,
+          imageBase64,
+          prediction,
+          location: currentLocation,
+          complaintPrompt: prediction ? getComplaintPrompt(prediction, currentLocation) : '',
+          localLang,
+          userName,
+          placeName
+        })
       });
       const data = await res.json();
-      console.log('[sendChatWithLocation] Chat API response:', data);
       setMessages([...newMessages, { role: 'ai', content: data.aiText || 'Sorry, I could not generate a response.' }]);
     } catch (err) {
-      console.error('[sendChatWithLocation] Error:', err);
       setMessages([...newMessages, { role: 'ai', content: 'Error: Could not reach the AI service.' }]);
     } finally {
       setLoading(false);
@@ -346,7 +337,7 @@ const Home = () => {
                 {geoDenied && (
                   <div className="mb-2 text-red-700 bg-red-100 p-2 rounded">
                     Location access denied. Please enable location in your browser for best results.
-                  </div>
+        </div>
                 )}
                 <div
                   className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${dragActive ? 'border-blue-400 bg-blue-50' : 'border-gray-300 bg-gray-50'}`}
@@ -358,24 +349,24 @@ const Home = () => {
                 >
                   <div className="text-4xl mb-2">📤</div>
                   <div className="font-semibold mb-1">Drag & drop an image here, or click to select</div>
-                  <input
-                    type="file"
-                    accept="image/*"
+            <input
+              type="file"
+              accept="image/*"
                     className="hidden"
-                    onChange={handleImageSelect}
-                    ref={fileInputRef}
-                  />
+              onChange={handleImageSelect}
+              ref={fileInputRef}
+            />
                   <div className="mt-2 text-sm text-gray-500">If you have a geotagged image, please upload it for more accurate location detection.</div>
-                </div>
+          </div>
               </>
-            )}
-            {selectedImage && !prediction && (
+        )}
+        {selectedImage && !prediction && (
               <>
                 <div className="flex flex-col items-center gap-2">
                   <img src={selectedImage} alt="Preview" className="w-40 h-40 object-cover rounded border mb-2" />
-                  <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 disabled:opacity-50"
-                    onClick={handlePredict}
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-600 disabled:opacity-50"
+              onClick={handlePredict}
                     disabled={
                       isPredicting ||
                       !location ||
@@ -384,14 +375,14 @@ const Home = () => {
                       !latitude ||
                       !longitude
                     }
-                  >
-                    {isPredicting ? 'Analyzing...' : 'Analyze Image'}
-                  </button>
-                  <button
+            >
+              {isPredicting ? 'Analyzing...' : 'Analyze Image'}
+            </button>
+            <button
                     className="text-red-500 hover:underline"
-                    onClick={handleImageRemove}
-                  >Remove Image</button>
-                </div>
+              onClick={handleImageRemove}
+            >Remove Image</button>
+          </div>
               </>
             )}
             {prediction && (
@@ -494,55 +485,55 @@ const Home = () => {
               <div className="font-semibold mb-1">
                 AI-Generated Complaint ({localLang === 'en' ? 'English' : localLang === 'te' ? 'Telugu' : localLang === 'ta' ? 'Tamil' : localLang === 'hi' ? 'Hindi' : localLang === 'kn' ? 'Kannada' : localLang === 'ml' ? 'Malayalam' : 'Local Language'}):
               </div>
-              <textarea
-                className="w-full border rounded-lg px-3 py-2 mb-2 bg-gray-50"
-                value={localLang === 'en' ? englishComplaint : localComplaint}
-                readOnly
-                rows={8}
-              />
-              <div className="flex gap-2">
-                <button
-                  className="bg-blue-400 text-white px-3 py-1 rounded hover:bg-blue-500"
-                  onClick={() => navigator.clipboard.writeText(localLang === 'en' ? englishComplaint : localComplaint)}
-                  disabled={!(localLang === 'en' ? englishComplaint : localComplaint)}
-                >Copy</button>
-                <button
-                  className="bg-green-400 text-white px-3 py-1 rounded hover:bg-green-500"
-                  onClick={() => speakText(localLang === 'en' ? englishComplaint : localComplaint, localLang)}
-                  disabled={!(localLang === 'en' ? englishComplaint : localComplaint)}
-                >🔊 Speak</button>
-                <button
-                  className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600"
-                  onClick={async () => {
-                    try {
-                      const res = await fetch('/api/complaint-pdf', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                          complaintText: localLang === 'en' ? englishComplaint : localComplaint,
-                          imageBase64
-                        })
-                      });
-                      if (!res.ok) throw new Error('Failed to generate PDF');
-                      const blob = await res.blob();
-                      const url = window.URL.createObjectURL(blob);
-                      const a = document.createElement('a');
-                      a.href = url;
-                      a.download = 'complaint.pdf';
-                      document.body.appendChild(a);
-                      a.click();
-                      a.remove();
-                      window.URL.revokeObjectURL(url);
-                    } catch (err) {
-                      alert('Failed to download PDF.');
-                    }
-                  }}
-                  disabled={!(localLang === 'en' ? englishComplaint : localComplaint)}
-                >Download PDF</button>
-              </div>
+                <textarea
+                  className="w-full border rounded-lg px-3 py-2 mb-2 bg-gray-50"
+                  value={localLang === 'en' ? englishComplaint : localComplaint}
+                  readOnly
+                  rows={8}
+                />
+                <div className="flex gap-2">
+                  <button
+                    className="bg-blue-400 text-white px-3 py-1 rounded hover:bg-blue-500"
+                    onClick={() => navigator.clipboard.writeText(localLang === 'en' ? englishComplaint : localComplaint)}
+                    disabled={!(localLang === 'en' ? englishComplaint : localComplaint)}
+                  >Copy</button>
+                  <button
+                    className="bg-green-400 text-white px-3 py-1 rounded hover:bg-green-500"
+                    onClick={() => speakText(localLang === 'en' ? englishComplaint : localComplaint, localLang)}
+                    disabled={!(localLang === 'en' ? englishComplaint : localComplaint)}
+                  >🔊 Speak</button>
+                  <button
+                    className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600"
+                    onClick={async () => {
+                      try {
+                        const res = await fetch('/api/complaint-pdf', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            complaintText: localLang === 'en' ? englishComplaint : localComplaint,
+                            imageBase64
+                          })
+                        });
+                        if (!res.ok) throw new Error('Failed to generate PDF');
+                        const blob = await res.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'complaint.pdf';
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                        window.URL.revokeObjectURL(url);
+                      } catch (err) {
+                        alert('Failed to download PDF.');
+                      }
+                    }}
+                    disabled={!(localLang === 'en' ? englishComplaint : localComplaint)}
+                  >Download PDF</button>
+                </div>
             </Card>
           )}
-        </div>
+              </div>
         {/* Right Panel: Chat */}
         <div className="md:w-1/2 flex flex-col h-[70vh]">
           <Card title={<><span role="img" aria-label="Chat">💬</span> Assistant Chat</>} className="flex-1 flex flex-col">
