@@ -1,0 +1,11 @@
+[
+  {
+    "timestamp": "2025-07-01T16:43:01.302Z",
+    "originalLabel": "Electric Pole",
+    "confidence": "99.83",
+    "userCorrection": "it is a blue print of some other file not of eletric pole",
+    "userName": "sai",
+    "location": "Proddatur, Andhra Pradesh, India (14.760712, 78.554588)",
+    "correctionImage": null
+  }
+]

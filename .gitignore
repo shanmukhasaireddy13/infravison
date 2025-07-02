@@ -1,0 +1,44 @@
+# Node.js
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# dotenv environment variables
+.env
+.env.*
+
+# Build output
+/build
+/dist
+/.next
+out/
+
+# React
+*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Feedback uploads and data
+InfraVision/server/feedback_uploads/
+InfraVision/server/feedback.json
+
+# ML model weights (if not versioning large files)
+*.bin
+
+# Vite/React cache
+.vite
+.cache
+
+# Misc
+coverage/
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project 
