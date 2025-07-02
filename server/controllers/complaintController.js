@@ -25,8 +25,11 @@ const generateComplaintText = async (req, res) => {
 };
 
 const chatHelp = async (req, res) => {
+  console.log('--- /api/chat-help called ---');
+  console.log('Request body:', JSON.stringify(req.body));
   const { messages, imageBase64, prediction, location, complaintPrompt, localLang, userName, placeName } = req.body;
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
+    console.log('Missing or invalid messages array');
     return res.status(400).json({ error: 'messages array is required' });
   }
 
@@ -37,13 +40,15 @@ const chatHelp = async (req, res) => {
   messages.forEach(msg => {
     contextMsg += `${msg.role === 'user' ? 'User' : 'AI'}: ${msg.content}\n`;
   });
+  console.log('Generated chat context:', contextMsg);
 
   try {
     const { aiText } = await geminiService.generateChatResponse(contextMsg, imageBase64, prediction, location, localLang);
+    console.log('Gemini chat result:', aiText);
     res.json({ aiText });
   } catch (error) {
-    console.error('Gemini API error:', error?.response?.data || error.message);
-    res.status(500).json({ error: 'Failed to get AI help response' });
+    console.error('Gemini API error:', error?.response?.data || error.message, error);
+    res.status(500).json({ error: 'Failed to get AI help response', details: error?.response?.data || error.message });
   }
 };
 

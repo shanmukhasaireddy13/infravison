@@ -19,10 +19,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-
-
-  origin: ['https://infravison.onrender.com']
-
+  origin: ['http://localhost:5173']
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -172,6 +169,12 @@ app.post('/api/feedback', feedbackUpload.single('correctionImage'), (req, res) =
 
 // Serve uploaded images
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+console.log('=== InfraVision backend starting ===');
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+  next();
+});
 
 app.listen(PORT, () => {
   console.log(`🚀 InfraVision Server running on port ${PORT}`);

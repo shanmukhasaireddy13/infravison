@@ -6,6 +6,11 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 async function generateComplaint(prompt, imageBase64, prediction = null, location = null, localLang = 'te', placeName = '') {
+    console.log('Calling Gemini API for complaint generation...');
+    console.log('Prompt:', prompt);
+    console.log('Prediction:', prediction);
+    console.log('Location:', location);
+    console.log('Place name:', placeName);
     let fullPrompt = `Write a formal, structured complaint letter as a concerned citizen, suitable for submission to a government authority. Do NOT mention AI, automation, or machine learning. Use only the information from the attached image and the provided issue description. The letter should include:
 
 - Subject line
@@ -34,28 +39,34 @@ Always include a [Location: ...] section in the letter, using the provided place
         ]
     };
     try {
+        console.log('Gemini API request data:', JSON.stringify(data));
         const response = await axios.post(GEMINI_URL, data, {
             headers: { 'Content-Type': 'application/json' }
         });
+        console.log('Gemini API response:', JSON.stringify(response.data));
         const englishComplaint = response.data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
         const translatePrompt = `Translate the following letter into ${localLang === 'te' ? 'Telugu' : localLang} and output only the translated letter, nothing else.\n\n${englishComplaint}`;
         const translateParts = [ { text: translatePrompt } ];
         const translateData = { contents: [ { parts: translateParts } ] };
+        console.log('Gemini API translation request:', JSON.stringify(translateData));
         const translateRes = await axios.post(GEMINI_URL, translateData, {
             headers: { 'Content-Type': 'application/json' }
         });
+        console.log('Gemini API translation response:', JSON.stringify(translateRes.data));
         const localComplaint = translateRes.data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
         return { englishComplaint, localComplaint };
     } catch (error) {
-        console.error('Gemini API error:', error?.response?.data || error.message);
+        console.error('Gemini API error:', error?.response?.data || error.message, error);
         throw new Error('Failed to generate complaint');
     }
 }
 
 // New: For chat-based contextual answers
 async function generateChatResponse(prompt, imageBase64, prediction = null, location = null, localLang = 'te') {
+    console.log('Calling Gemini API for chat response...');
+    console.log('Prompt:', prompt);
     const parts = [ { text: prompt } ];
     if (imageBase64) {
         parts.push({ inline_data: { mime_type: 'image/png', data: imageBase64 } });
@@ -64,13 +75,15 @@ async function generateChatResponse(prompt, imageBase64, prediction = null, loca
         contents: [ { parts } ]
     };
     try {
+        console.log('Gemini API chat request data:', JSON.stringify(data));
         const response = await axios.post(GEMINI_URL, data, {
             headers: { 'Content-Type': 'application/json' }
         });
+        console.log('Gemini API chat response:', JSON.stringify(response.data));
         const aiText = response.data.candidates?.[0]?.content?.parts?.[0]?.text || '';
         return { aiText };
     } catch (error) {
-        console.error('Gemini API error:', error?.response?.data || error.message);
+        console.error('Gemini API error:', error?.response?.data || error.message, error);
         throw new Error('Failed to get AI chat response');
     }
 }
