@@ -47,6 +47,18 @@ function renderMarkdown(text) {
   return html;
 }
 
+// Add this utility for logging
+function logApiCall(endpoint, payload, response, error) {
+  console.log(`[API CALL] ${endpoint}`);
+  console.log('Payload:', payload);
+  if (response) {
+    console.log('Response:', response);
+  }
+  if (error) {
+    console.error('Error:', error);
+  }
+}
+
 const Home = () => {
   // State
   const [model, setModel] = useState(null);

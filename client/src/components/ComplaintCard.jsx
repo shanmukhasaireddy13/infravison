@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import jsPDF from 'jspdf';
 
 export default function ComplaintCard({ label, latitude, longitude, complaintText, userName, userDetails }) {
+  useEffect(() => {
+    console.log('[ComplaintCard] Rendered with props:', { label, latitude, longitude, complaintText, userName, userDetails });
+  }, [label, latitude, longitude, complaintText, userName, userDetails]);
+
   const copyToClipboard = () => {
     navigator.clipboard.writeText(complaintText);
   };
