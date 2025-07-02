@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # InfraVision - AI-Powered Infrastructure Monitoring
 
 InfraVision is a full-stack MERN application that uses AI to detect and classify infrastructure issues from images, automatically generating professional complaint messages for municipal authorities.
@@ -220,3 +221,6 @@ For support and questions:
 ---
 
 **InfraVision** - Making infrastructure monitoring smarter with AI! 🚀 
+=======
+# infravison
+>>>>>>> 6a1cc6edeefe1473a357d8714c22a8fc777ed4a8
