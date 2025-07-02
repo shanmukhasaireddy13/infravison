@@ -176,29 +176,34 @@ const Home = () => {
     img.onload = async () => {
       try {
         const results = await model.predict(img);
+        console.log('[handlePredict] Model prediction results:', results);
         const best = results.reduce((a, b) => (a.probability > b.probability ? a : b));
         const pred = { label: best.className, confidence: (best.probability * 100).toFixed(2) };
+        console.log('[handlePredict] Best prediction:', pred);
         setPrediction(pred);
         setIsGenerating(true);
+        const requestBody = {
+          label: pred.label,
+          latitude: latitude,
+          longitude: longitude,
+          userName,
+          userDetails,
+          imageBase64,
+          localLang
+        };
+        console.log('[handlePredict] Sending request to', COMPLAINT_API_URL, 'with body:', requestBody);
         const res = await fetch(COMPLAINT_API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            label: pred.label,
-            latitude: latitude,
-            longitude: longitude,
-            userName,
-            userDetails,
-            imageBase64,
-            localLang
-          })
+          body: JSON.stringify(requestBody)
         });
         const data = await res.json();
-        console.log('Complaint API response:', data);
+        console.log('[handlePredict] Complaint API response:', data);
         setEnglishComplaint(data.englishComplaint || '');
         setLocalComplaint(data.localComplaint || '');
         setComplaint(data.englishComplaint || data.complaint || data.complaintText || 'No complaint generated.');
       } catch (err) {
+        console.error('[handlePredict] Error:', err);
         setPrediction({ label: 'Unknown' });
         setError('Failed to analyze image or generate complaint.');
       }
@@ -250,23 +255,27 @@ const Home = () => {
     setInput('');
     setLoading(true);
     try {
+      const requestBody = {
+        messages: newMessages,
+        imageBase64,
+        prediction,
+        location: currentLocation,
+        complaintPrompt: prediction ? getComplaintPrompt(prediction, currentLocation) : '',
+        localLang,
+        userName,
+        placeName
+      };
+      console.log('[sendChatWithLocation] Sending request to', CHAT_HELP_API_URL, 'with body:', requestBody);
       const res = await fetch(CHAT_HELP_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: newMessages,
-          imageBase64,
-          prediction,
-          location: currentLocation,
-          complaintPrompt: prediction ? getComplaintPrompt(prediction, currentLocation) : '',
-          localLang,
-          userName,
-          placeName
-        })
+        body: JSON.stringify(requestBody)
       });
       const data = await res.json();
+      console.log('[sendChatWithLocation] Chat API response:', data);
       setMessages([...newMessages, { role: 'ai', content: data.aiText || 'Sorry, I could not generate a response.' }]);
     } catch (err) {
+      console.error('[sendChatWithLocation] Error:', err);
       setMessages([...newMessages, { role: 'ai', content: 'Error: Could not reach the AI service.' }]);
     } finally {
       setLoading(false);
