@@ -6,9 +6,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'http://localhost:5000',
+      '/api': 'https://infravison-backend.onrender.com',
       '/uploads': {
-        target: 'http://localhost:5000',
+        target: 'https://infravison-backend.onrender.com',
         changeOrigin: true,
         secure: false,
       }
