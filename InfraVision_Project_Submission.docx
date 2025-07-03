@@ -1,3 +1,11 @@
+InfraVision Project Submission
+
+---
+
+[This file was previously corrupted by editing as plain text. Please use the content below to create a new .docx file in Microsoft Word or Google Docs.]
+
+---
+
 [Title Page]
 
 College Name: [Your College Name]
@@ -8,10 +16,8 @@ GEN AI PROJECT SUBMISSION DOCUMENT
 
 [Insert College Logo or Project Image Here]
 
-
 1. Project Title
 InfraVision: AI-Powered Complaint Management System
-
 
 2. Summary of Work Done
 
@@ -42,14 +48,12 @@ Key accomplishments include:
 
 [Insert screenshot of web interface or AI model output here]
 
-
 3. GitHub Repository Link
 You can access the complete codebase, documentation, and resources at:
 GitHub Repository – InfraVision: AI-Powered Complaint Management
 https://github.com/shanmukhasaireddy13/infravison
 
 **Live Website:** https://infravison.onrender.com/
-
 
 4. Testing Phase
 
@@ -83,7 +87,6 @@ The system was tested across multiple scenarios to ensure reliability and accura
 
 [Insert user feedback quotes or performance graphs here]
 
-
 5. Future Work
 1. Model Fine-tuning
    - Further train the image model with a larger, more diverse dataset for improved accuracy.
@@ -98,14 +101,12 @@ The system was tested across multiple scenarios to ensure reliability and accura
 6. Mobile App
    - Extend the system with a mobile application for on-the-go complaint submission and tracking.
 
-
 6. Conclusion
 InfraVision demonstrates the practical application of a local AI model and generative AI (Gemini) in automating and enhancing complaint management. The project showcases the integration of modern web technologies with AI models to deliver a robust, user-friendly solution for real-world organizational needs.
 
 You can try the live system at: https://infravison.onrender.com/
 
 [Insert concluding image or project summary graphic here]
-
 
 College Name: [Your College Name]
 Student Name: [Your Name]
