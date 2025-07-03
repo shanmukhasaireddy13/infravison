@@ -5,9 +5,7 @@ import headerImg from '../assets/header_img.png';
 
 const MODEL_URL = '/model/model.json';
 const METADATA_URL = '/model/metadata.json';
-const API_URL = '/api/ai-chat';
-const COMPLAINT_API_URL = '/api/generate-complaint';
-const CHAT_HELP_API_URL = '/api/chat-help';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 function Card({ title, children, className = '' }) {
   return (
@@ -192,7 +190,7 @@ const Home = () => {
         const pred = { label: best.className, confidence: (best.probability * 100).toFixed(2) };
         setPrediction(pred);
         setIsGenerating(true);
-        const res = await fetch(COMPLAINT_API_URL, {
+        const res = await fetch(`${BACKEND_URL}/api/generate-complaint`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -262,7 +260,7 @@ const Home = () => {
     setInput('');
     setLoading(true);
     try {
-      const res = await fetch('https://7cf6-103-255-146-15.ngrok-free.app/api/chat-help', {
+      const res = await fetch(`${BACKEND_URL}/api/ai-chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
