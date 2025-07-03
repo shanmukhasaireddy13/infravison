@@ -25,46 +25,33 @@ function generateComplaintPDF(complaintText, imageBase64, language = 'en') {
       let textFont = 'Helvetica';
       let boldFont = 'Helvetica-Bold';
       
-      // For non-English languages, try to use a simpler font approach
+      // For non-English languages, add helpful instructions
       if (language !== 'en') {
         console.log(`Generating PDF for language: ${language}`);
         
-        // Try to use system fonts that might support Unicode better
-        try {
-          // Check if Arial Unicode MS is available (common on Windows)
-          const systemFontPaths = [
-            'C:/Windows/Fonts/arial.ttf',
-            'C:/Windows/Fonts/calibri.ttf',
-            '/System/Library/Fonts/Arial.ttf',
-            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
-          ];
-          
-          let fontRegistered = false;
-          for (const fontPath of systemFontPaths) {
-            if (fs.existsSync(fontPath)) {
-              try {
-                doc.registerFont('SystemUnicodeFont', fontPath);
-                textFont = 'SystemUnicodeFont';
-                boldFont = 'SystemUnicodeFont';
-                titleFont = 'SystemUnicodeFont';
-                fontRegistered = true;
-                console.log(`Successfully registered system font: ${fontPath}`);
-                break;
-              } catch (fontErr) {
-                console.warn(`Failed to register font ${fontPath}:`, fontErr.message);
-              }
-            }
-          }
-          
-          if (!fontRegistered) {
-            console.log('No system Unicode font found, using Helvetica with text as-is');
-            // Just use Helvetica and render the text as-is
-            // PDFKit might handle some Unicode characters even with basic fonts
-          }
-        } catch (err) {
-          console.warn('Font registration failed:', err.message);
-          console.log('Using default Helvetica font');
-        }
+        const languageNames = {
+          'te': 'Telugu',
+          'hi': 'Hindi', 
+          'ta': 'Tamil',
+          'kn': 'Kannada',
+          'ml': 'Malayalam'
+        };
+        
+        const langName = languageNames[language] || language;
+        console.log(`Note: PDF for ${langName} may have display limitations.`);
+        
+        // Add helpful instructions at the top of the PDF
+        const instructions = `INSTRUCTIONS FOR ${langName.toUpperCase()} COMPLAINT:\n\n` +
+          `This PDF contains your complaint but may not display ${langName} characters correctly.\n` +
+          `For best results with ${langName} text:\n` +
+          `1. Copy the complaint from the web application\n` +
+          `2. Paste into Microsoft Word or Google Docs\n` +
+          `3. Set font to Arial Unicode MS or Noto Sans\n` +
+          `4. Print or save from there\n\n` +
+          `Original complaint content (may appear as boxes below):\n` +
+          `${'='.repeat(60)}\n\n`;
+        
+        complaintText = instructions + complaintText;
       }
       const buffers = [];
       doc.on('data', buffers.push.bind(buffers));
