@@ -1,9 +1,13 @@
 import PDFDocument from 'pdfkit';
 
-function generateComplaintPDF(complaintText, imageBase64) {
+function generateComplaintPDF(complaintText, imageBase64, language = 'en') {
   return new Promise((resolve, reject) => {
     try {
-      const doc = new PDFDocument({ margin: 50 });
+      // Use a font that supports Unicode characters
+      const doc = new PDFDocument({ 
+        margin: 50,
+        bufferPages: true
+      });
       const buffers = [];
       doc.on('data', buffers.push.bind(buffers));
       doc.on('end', () => {
@@ -11,8 +15,13 @@ function generateComplaintPDF(complaintText, imageBase64) {
         resolve(pdfData);
       });
 
-      // Title
-      doc.fontSize(20).font('Times-Bold').text('Formal Complaint Letter', { align: 'center', underline: true });
+      // Title - Use fallback for non-English languages
+      const isNonEnglish = language !== 'en';
+      const titleFont = isNonEnglish ? 'Helvetica-Bold' : 'Times-Bold';
+      const textFont = isNonEnglish ? 'Helvetica' : 'Times-Roman';
+      const boldFont = isNonEnglish ? 'Helvetica-Bold' : 'Times-Bold';
+      
+      doc.fontSize(20).font(titleFont).text('Formal Complaint Letter', { align: 'center', underline: true });
       doc.moveDown(1.5);
 
       // Parse the complaintText into sections if possible
@@ -41,18 +50,18 @@ function generateComplaintPDF(complaintText, imageBase64) {
 
       // Subject
       if (sections.Subject) {
-        doc.fontSize(14).font('Times-Bold').text('Subject:', { continued: true }).font('Times-Roman').text(' ' + sections.Subject);
+        doc.fontSize(14).font(boldFont).text('Subject:', { continued: true }).font(textFont).text(' ' + sections.Subject);
         doc.moveDown();
       }
       // Salutation
       if (sections.Salutation) {
-        doc.fontSize(12).font('Times-Roman').text(sections.Salutation);
+        doc.fontSize(12).font(textFont).text(sections.Salutation);
         doc.moveDown();
       }
       // Description
       if (sections.Description) {
-        doc.fontSize(12).font('Times-Bold').text('Description:', { underline: true });
-        doc.font('Times-Roman').text(sections.Description);
+        doc.fontSize(12).font(boldFont).text('Description:', { underline: true });
+        doc.font(textFont).text(sections.Description);
         doc.moveDown();
       }
       // Add image if provided
@@ -80,36 +89,36 @@ function generateComplaintPDF(complaintText, imageBase64) {
       }
       // Location
       if (sections.Location) {
-        doc.fontSize(12).font('Times-Bold').text('Location:', { underline: true });
-        doc.font('Times-Roman').text(sections.Location);
+        doc.fontSize(12).font(boldFont).text('Location:', { underline: true });
+        doc.font(textFont).text(sections.Location);
         doc.moveDown();
       }
       // Impact
       if (sections.Impact) {
-        doc.fontSize(12).font('Times-Bold').text('Impact/Urgency:', { underline: true });
-        doc.font('Times-Roman').text(sections.Impact);
+        doc.fontSize(12).font(boldFont).text('Impact/Urgency:', { underline: true });
+        doc.font(textFont).text(sections.Impact);
         doc.moveDown();
       }
       // Requested Action
       if (sections['Requested Action']) {
-        doc.fontSize(12).font('Times-Bold').text('Requested Action:', { underline: true });
-        doc.font('Times-Roman').text(sections['Requested Action']);
+        doc.fontSize(12).font(boldFont).text('Requested Action:', { underline: true });
+        doc.font(textFont).text(sections['Requested Action']);
         doc.moveDown();
       }
       // Closing
       if (sections.Closing) {
-        doc.fontSize(12).font('Times-Roman').text(sections.Closing);
+        doc.fontSize(12).font(textFont).text(sections.Closing);
         doc.moveDown();
       }
       // Signature
       if (sections.Signature) {
-        doc.fontSize(12).font('Times-Roman').text(sections.Signature);
+        doc.fontSize(12).font(textFont).text(sections.Signature);
         doc.moveDown();
       }
 
       // If no sections detected, just print the complaintText
       if (Object.keys(sections).length === 0) {
-        doc.fontSize(12).font('Times-Roman').text(complaintText);
+        doc.fontSize(12).font(textFont).text(complaintText);
       }
 
       doc.end();

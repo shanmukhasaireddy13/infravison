@@ -580,7 +580,8 @@ const Home = () => {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                           complaintText: localLang === 'en' ? englishComplaint : localComplaint,
-                          imageBase64
+                          imageBase64,
+                          language: localLang
                         })
                       });
                       if (!res.ok) {

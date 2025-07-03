@@ -127,12 +127,12 @@ app.post('/api/generate-complaint', generateComplaintText);
 app.post('/api/chat-help', chatHelp);
 
 app.post('/api/complaint-pdf', async (req, res) => {
-  const { complaintText, imageBase64 } = req.body;
+  const { complaintText, imageBase64, language } = req.body;
   if (!complaintText) {
     return res.status(400).json({ error: 'complaintText is required' });
   }
   try {
-    const pdfBuffer = await pdfService.generateComplaintPDF(complaintText, imageBase64);
+    const pdfBuffer = await pdfService.generateComplaintPDF(complaintText, imageBase64, language || 'en');
     res.set({
       'Content-Type': 'application/pdf',
       'Content-Disposition': 'attachment; filename="complaint.pdf"',
@@ -140,6 +140,7 @@ app.post('/api/complaint-pdf', async (req, res) => {
     });
     res.send(pdfBuffer);
   } catch (err) {
+    console.error('PDF generation error:', err);
     res.status(500).json({ error: 'Failed to generate PDF' });
   }
 });
