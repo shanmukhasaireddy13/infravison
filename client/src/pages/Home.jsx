@@ -260,7 +260,11 @@ const Home = () => {
     setInput('');
     setLoading(true);
     try {
+<<<<<<< Updated upstream
       const res = await fetch(`${BACKEND_URL}/api/chat-help`, {
+=======
+      const res = await fetch(`${BACKEND_URL}/api/ai-chat`, {
+>>>>>>> Stashed changes
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

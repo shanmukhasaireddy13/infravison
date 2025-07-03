@@ -1,12 +1,12 @@
 # InfraVision - AI-Powered Infrastructure Monitoring
 
-InfraVision is a full-stack MERN application that uses AI to detect and classify infrastructure issues from images, automatically generating professional complaint messages for municipal authorities.
+InfraVision is a full-stack MERN application that uses AI to detect and classify infrastructure issues from images, automatically generating professional complaint messages for municipal authorities. The project now uses a local TensorFlow.js model for image classification and Gemini for AI-powered complaint generation.
 
 ## 🚀 Features
 
 - **AI-Powered Image Analysis**: Uses TensorFlow.js with a custom-trained model to classify infrastructure issues
 - **Four Detection Categories**: Garbage, Damaged Road, Electric Pole, Manhole
-- **Automatic Complaint Generation**: Creates professional complaint messages based on detected issues
+- **Automatic Complaint Generation**: Uses Gemini to create professional complaint messages based on detected issues
 - **Modern UI/UX**: Beautiful, responsive design with drag-and-drop image upload
 - **Export Options**: Copy to clipboard or print as PDF
 - **Real-time Confidence Scores**: Shows prediction confidence for all categories
@@ -14,7 +14,7 @@ InfraVision is a full-stack MERN application that uses AI to detect and classify
 ## 🏗️ Architecture
 
 - **Frontend**: React.js with TensorFlow.js for client-side AI inference
-- **Backend**: Node.js + Express for image upload handling and AI-powered complaint generation
+- **Backend**: Node.js + Express for image upload handling
 - **AI Model**: TensorFlow.js model (Teachable Machine format) for image classification
 - **Styling**: Modern CSS with responsive design
 
@@ -47,12 +47,9 @@ InfraVision/
 │   ├── uploads/
 │   ├── feedback_uploads/
 │   ├── server.js
-│   └── package.json
-├── tm-my-image-model/      # Custom AI model files
-├── AI_SETUP.md             # AI setup instructions
-├── DEPLOYMENT.md           # Deployment guide
-├── README.md               # Project documentation
-└── InfraVision_Project_Submission.docx # Project report
+│   ├── package.json
+│   └── .gitignore
+└── README.md
 ```
 
 ## 🛠️ Installation & Setup
@@ -76,12 +73,6 @@ npm install
 ```env
 PORT=5000
 NODE_ENV=development
-# WatsonX.ai Configuration (Primary AI Service)
-WATSONX_API_KEY=your_watsonx_api_key_here
-WATSONX_PROJECT_ID=your_watsonx_project_id_here
-WATSONX_URL=https://us-south.ml.cloud.ibm.com
-# OpenAI Configuration (Fallback AI Service)
-OPENAI_API_KEY=your_openai_api_key_here
 ```
 4. Start the server:
 ```bash
@@ -113,12 +104,43 @@ The frontend will run on `http://localhost:5173`
 2. **Wait for Model Loading**: The AI model will load automatically (you'll see a success message)
 3. **Upload an Image**: Drag and drop or click to select an infrastructure image
 4. **Analyze**: Click "Analyze Image" to run the AI classification
-5. **Review Results**: View the detected category, confidence scores, and generated complaint
+5. **Review Results**: View the detected category, confidence scores, and generated complaint (powered by Gemini)
 6. **Export**: Copy the message or print as PDF
 
 ## 🌐 Deployment
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions, including environment variables, production build steps, and hosting recommendations.
+### Backend Deployment (Render.com)
+
+1. Create a new Web Service on Render
+2. Connect your GitHub repository
+3. Set build command: `npm install`
+4. Set start command: `npm start`
+5. Add environment variables:
+   - `PORT`: 5000
+   - `NODE_ENV`: production
+
+### Frontend Deployment (Vercel/Netlify)
+
+1. **Vercel**:
+   - Connect your GitHub repository
+   - Set build command: `npm run build`
+   - Set output directory: `build`
+   - Deploy
+
+2. **Netlify**:
+   - Connect your GitHub repository
+   - Set build command: `npm run build`
+   - Set publish directory: `build`
+   - Deploy
+
+### Environment Configuration
+
+For production, update the backend URL in the frontend:
+
+```javascript
+// In ComplaintCard.jsx, update the image URL
+src={`https://your-backend-url.com${imageUrl}`}
+```
 
 ## 🤖 AI Model Details
 
@@ -127,8 +149,6 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions, inclu
 - **Classes**: 4 (Garbage, Damaged Road, Electric Pole, Manhole)
 - **Framework**: MobileNet-based architecture
 - **Inference**: Client-side using TensorFlow.js
-- **Model Files**: Located in `client/public/model/` and `tm-my-image-model/`
-- **Setup**: See [AI_SETUP.md](./AI_SETUP.md) for details on model usage and integration, including WatsonX.ai and OpenAI configuration.
 
 ## 📱 Mobile Responsiveness
 
@@ -172,6 +192,9 @@ The application is fully responsive and works on:
    - Check browser console for TensorFlow.js errors
    - Ensure model is loaded before prediction
    - Verify image format and size
+5. **Gemini API Issues**:
+   - Ensure your Gemini API key is valid and set in the `.env` file
+   - Check server logs for Gemini-related errors
 
 ## 📄 License
 
@@ -213,11 +236,10 @@ Contributions are welcome! Please open issues or submit pull requests for improv
 
 ## 📞 Contact
 
-For questions, suggestions, or support, please contact:
-
-- InfraVision Team
-- Email: s.shanmukhasaireddy13@gmail.com
-
+For support and questions:
+- Create an issue on GitHub
+- Check the troubleshooting section
+- Review the documentation
 
 ---
 
