@@ -1,13 +1,97 @@
 import PDFDocument from 'pdfkit';
+import fs from 'fs';
+import fetch from 'node-fetch';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Cache for downloaded fonts
+let fontsCache = {};
+
+// Download and cache Google Noto Sans font
+async function downloadNotoFont() {
+  return new Promise((resolve) => {
+    const fontUrl = 'https://fonts.gstatic.com/s/notosans/v36/o-0IIpQlx3QUlC5A4PNjXhFVZNyB.woff2';
+    const fontPath = path.join(__dirname, 'fonts', 'NotoSans-Regular.woff2');
+    
+    // Check if font already exists
+    if (fs.existsSync(fontPath)) {
+      resolve(fontPath);
+      return;
+    }
+    
+    // Create fonts directory if it doesn't exist
+    if (!fs.existsSync(path.dirname(fontPath))) {
+      fs.mkdirSync(path.dirname(fontPath), { recursive: true });
+    }
+    
+    const file = fs.createWriteStream(fontPath);
+    https.get(fontUrl, (response) => {
+      response.pipe(file);
+      file.on('finish', () => {
+        file.close();
+        resolve(fontPath);
+      });
+    }).on('error', () => {
+      // If download fails, return null to use fallback
+      resolve(null);
+    });
+  });
+}
 
 function generateComplaintPDF(complaintText, imageBase64, language = 'en') {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     try {
-      // Use a font that supports Unicode characters
+      // Create PDF document with proper Unicode support
       const doc = new PDFDocument({ 
         margin: 50,
-        bufferPages: true
+        bufferPages: true,
+        // Enable Unicode support
+        compress: false
       });
+      
+      // Set default fonts
+      let titleFont = 'Helvetica-Bold';
+      let textFont = 'Helvetica';
+      let boldFont = 'Helvetica-Bold';
+      
+      // For non-English languages, try different approaches
+      if (language !== 'en') {
+        const downloadAndRegisterFont = async (url, name) => {
+          try {
+            console.log(`Downloading font: ${name}`);
+            const res = await fetch(url);
+            const arrayBuffer = await res.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+            doc.registerFont(name, buffer);
+            console.log(`Successfully registered font: ${name}`);
+            return name;
+          } catch (error) {
+            console.error('Error downloading font:', error);
+            return null;
+          }
+        };
+
+        // Try to download NotoSans font for better Unicode support
+        const notoSans = await downloadAndRegisterFont(
+          'https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSans/NotoSans-Regular.ttf',
+          'NotoSans'
+        );
+
+        if (notoSans) {
+          textFont = notoSans;
+          boldFont = notoSans;
+          titleFont = notoSans;
+          console.log('Using NotoSans font for Unicode support');
+        } else {
+          console.warn('Failed to download NotoSans, using default Helvetica');
+        }
+      } catch (err) {
+        console.warn('Font registration failed:', err.message);
+      }
+      }
       const buffers = [];
       doc.on('data', buffers.push.bind(buffers));
       doc.on('end', () => {
@@ -15,12 +99,7 @@ function generateComplaintPDF(complaintText, imageBase64, language = 'en') {
         resolve(pdfData);
       });
 
-      // Title - Use fallback for non-English languages
-      const isNonEnglish = language !== 'en';
-      const titleFont = isNonEnglish ? 'Helvetica-Bold' : 'Times-Bold';
-      const textFont = isNonEnglish ? 'Helvetica' : 'Times-Roman';
-      const boldFont = isNonEnglish ? 'Helvetica-Bold' : 'Times-Bold';
-      
+      // Title
       doc.fontSize(20).font(titleFont).text('Formal Complaint Letter', { align: 'center', underline: true });
       doc.moveDown(1.5);
 
