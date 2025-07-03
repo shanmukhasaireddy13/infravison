@@ -9,8 +9,8 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 function Card({ title, children, className = '' }) {
   return (
-    <div className={`bg-white rounded-xl shadow p-4 border border-gray-200 ${className}`}>
-      {title && <h2 className="text-lg font-bold mb-3 text-blue-700 flex items-center gap-2">
+    <div className={`bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6 transition-all duration-200 hover:shadow-2xl hover:border-blue-200/30 ${className}`}>
+      {title && <h2 className="text-xl font-bold mb-4 bg-gradient-to-r from-blue-700 to-purple-600 bg-clip-text text-transparent flex items-center gap-2">
         {title}
       </h2>}
       {children}
@@ -331,12 +331,30 @@ const Home = () => {
 
   // --- UI ---
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-200 flex flex-col items-center py-8">
-      {/* Main UI Section */}
-      <div id="main-ui" className="flex flex-col md:flex-row gap-6 w-full max-w-5xl p-2">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-teal-100 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-20 left-10 w-64 h-64 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse"></div>
+        <div className="absolute top-40 right-20 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse animation-delay-2000"></div>
+        <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse animation-delay-4000"></div>
+      </div>
+      
+      <div className="relative z-10 flex flex-col items-center py-8 px-4">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-blue-700 via-purple-600 to-teal-600 bg-clip-text text-transparent mb-2">
+            InfraVision Dashboard
+          </h1>
+          <p className="text-gray-600 font-medium">
+            Upload, analyze, and generate professional complaint letters
+          </p>
+        </div>
+        
+        {/* Main UI Section */}
+        <div id="main-ui" className="flex flex-col lg:flex-row gap-8 w-full max-w-7xl">
         {/* Left Panel */}
         <div className="md:w-1/2 flex flex-col gap-4">
-          <Card title={<><span role="img" aria-label="Upload">📷</span> Upload Image & Issue</>}>
+          <Card title={<span><span role="img" aria-label="Upload">📷</span> Upload Image & Issue</span>}>
             {/* Drag-and-drop area */}
             {!selectedImage && (
               <>
@@ -461,7 +479,7 @@ const Home = () => {
             )}
             {isPredicting && <div className="text-blue-600 font-semibold mt-2">Analyzing image...</div>}
           </Card>
-          <Card title={<><span role="img" aria-label="User">👤</span> Your Information</>}>
+          <Card title={<span><span role="img" aria-label="User">👤</span> Your Information</span>}>
             <label className="block font-semibold mb-1">Your Name <span className="text-red-500">*</span></label>
             <input
               type="text"
@@ -480,7 +498,7 @@ const Home = () => {
               className="w-full p-2 border rounded mb-2"
             />
           </Card>
-          <Card title={<><span role="img" aria-label="Location">📍</span> Location</>}>
+          <Card title={<span><span role="img" aria-label="Location">📍</span> Location</span>}>
             <input
               type="text"
               value={location}
@@ -492,7 +510,7 @@ const Home = () => {
           </Card>
           {/* Complaint Letter Card */}
           {prediction && (englishComplaint || localComplaint) && (
-            <Card title={<><span role="img" aria-label="Letter">📄</span> Complaint Letter</>}>
+            <Card title={<span><span role="img" aria-label="Letter">📄</span> Complaint Letter</span>}>
               <div className="font-semibold mb-1">
                 AI-Generated Complaint ({localLang === 'en' ? 'English' : localLang === 'te' ? 'Telugu' : localLang === 'ta' ? 'Tamil' : localLang === 'hi' ? 'Hindi' : localLang === 'kn' ? 'Kannada' : localLang === 'ml' ? 'Malayalam' : 'Local Language'}):
               </div>
@@ -547,7 +565,7 @@ const Home = () => {
         </div>
         {/* Right Panel: Chat */}
         <div className="md:w-1/2 flex flex-col h-[70vh]">
-          <Card title={<><span role="img" aria-label="Chat">💬</span> Assistant Chat</>} className="flex-1 flex flex-col">
+          <Card title={<span><span role="img" aria-label="Chat">💬</span> Assistant Chat</span>} className="flex-1 flex flex-col">
             {/* Language selector always visible in chat */}
             <div className="mb-2">
               <label className="block font-semibold mb-1">Select Chat Language</label>
@@ -650,6 +668,7 @@ const Home = () => {
         </div>
       </div>
       {error && <div className="text-red-600 text-sm mt-2">{error}</div>}
+      </div>
     </div>
   );
 };
