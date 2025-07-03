@@ -217,6 +217,36 @@ const Home = () => {
     };
   };
 
+  // Clear all data function
+  const handleClearAll = () => {
+    setModel(null);
+    setPrediction(null);
+    setSelectedImage(null);
+    setImageBase64(null);
+    setComplaint('');
+    setLocation('');
+    setError('');
+    setEnglishComplaint('');
+    setLocalComplaint('');
+    setLatitude('');
+    setLongitude('');
+    setUserName('');
+    setUserDetails('');
+    setMessages([]);
+    setInput('');
+    setPlaceName('');
+    setFeedbackGiven(false);
+    setFeedback('');
+    setCorrectionText('');
+    setCorrectionImage(null);
+    setFeedbackSubmitted(false);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    // Reload the model
+    tmImage.load(MODEL_URL, METADATA_URL).then(setModel);
+  };
+
   // Chat
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -342,9 +372,18 @@ const Home = () => {
       <div className="relative z-10 flex flex-col items-center py-8 px-4">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-blue-700 via-purple-600 to-teal-600 bg-clip-text text-transparent mb-2">
-            InfraVision Dashboard
-          </h1>
+          <div className="flex justify-center items-center gap-4 mb-2">
+            <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-blue-700 via-purple-600 to-teal-600 bg-clip-text text-transparent">
+              InfraVision Dashboard
+            </h1>
+            <button
+              onClick={handleClearAll}
+              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors shadow-lg hover:shadow-xl"
+              title="Clear all data and start fresh"
+            >
+              🗑️ Clear All
+            </button>
+          </div>
           <p className="text-gray-600 font-medium">
             Upload, analyze, and generate professional complaint letters
           </p>
