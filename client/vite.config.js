@@ -8,7 +8,7 @@ export default defineConfig({
     proxy: {
       '/api': 'https://7cf6-103-255-146-15.ngrok-free.app',
       '/uploads': {
-        target: 'https://7cf6-103-255-146-15.ngrok-free.app/',
+        target: 'https://7cf6-103-255-146-15.ngrok-free.app',
         changeOrigin: true,
         secure: false,
       }
