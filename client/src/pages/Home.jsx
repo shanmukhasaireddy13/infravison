@@ -260,7 +260,7 @@ const Home = () => {
     setInput('');
     setLoading(true);
     try {
-      const res = await fetch(`${BACKEND_URL}/api/ai-chat`, {
+      const res = await fetch(`${BACKEND_URL}/api/chat-help`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
