@@ -6,9 +6,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'https://infravison-backend.onrender.com',
+      '/api': 'https://7cf6-103-255-146-15.ngrok-free.app',
       '/uploads': {
-        target: 'https://infravison-backend.onrender.com',
+        target: 'https://7cf6-103-255-146-15.ngrok-free.app/',
         changeOrigin: true,
         secure: false,
       }
