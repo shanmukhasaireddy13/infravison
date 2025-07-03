@@ -1,5 +1,7 @@
 # InfraVision - AI-Powered Infrastructure Monitoring
 
+**Live Website:** [https://infravison.onrender.com/](https://infravison.onrender.com/)
+
 InfraVision is a full-stack MERN application that uses AI to detect and classify infrastructure issues from images, automatically generating professional complaint messages for municipal authorities. The project now uses a local TensorFlow.js model for image classification and Gemini for AI-powered complaint generation.
 
 ## 🚀 Features
@@ -236,10 +238,11 @@ Contributions are welcome! Please open issues or submit pull requests for improv
 
 ## 📞 Contact
 
-For support and questions:
-- Create an issue on GitHub
-- Check the troubleshooting section
-- Review the documentation
+For questions, suggestions, or support, please contact:
+
+- InfraVision Team
+- Email: s.shanmukhasaireddy@gmail.com
+- Live Website: [https://infravison.onrender.com/](https://infravison.onrender.com/)
 
 ---
 

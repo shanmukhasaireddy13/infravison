@@ -22,19 +22,21 @@ In the initial phase, we identified the need for an intelligent complaint manage
 - Provide an intuitive web interface for users and administrators.
 - Integrate a custom-trained image classification model for enhanced accuracy.
 
-A detailed proposal was submitted, outlining the problem, objectives, required tools, and expected outcomes. [Insert screenshot of proposal or planning document here]
+A detailed proposal was submitted, outlining the problem, objectives, required tools, and expected outcomes.
+
+[Insert screenshot of proposal or planning document here]
 
 Execution and Demonstration:
 The project was implemented using a modern web stack:
 - Frontend: React.js (with Tailwind CSS for styling)
 - Backend: Node.js with Express
-- AI Integration: Custom Teachable Machine image model and text analysis
+- AI Integration: Local TensorFlow.js image model for classification, Gemini (Google's generative AI) for complaint text generation
 - Deployment: Vite for frontend, Node.js server for backend
 
 Key accomplishments include:
 - Developed a user-friendly interface for complaint submission, including image upload and text input.
-- Integrated a custom-trained image classification model (Teachable Machine) to automatically categorize complaints based on uploaded images.
-- Implemented backend APIs for complaint management, storage, and AI inference.
+- Integrated a local TensorFlow.js model for real-time, client-side image classification.
+- Implemented backend APIs for complaint management and Gemini-powered text generation.
 - Enabled real-time feedback to users on complaint status and category.
 - Documented the codebase and provided setup instructions.
 
@@ -44,7 +46,9 @@ Key accomplishments include:
 3. GitHub Repository Link
 You can access the complete codebase, documentation, and resources at:
 GitHub Repository – InfraVision: AI-Powered Complaint Management
-[Replace with your actual GitHub link]
+https://github.com/shanmukhasaireddy13/infravison
+
+**Live Website:** https://infravison.onrender.com/
 
 
 4. Testing Phase
@@ -52,8 +56,8 @@ GitHub Repository – InfraVision: AI-Powered Complaint Management
 4.1 Testing Strategy
 The system was tested across multiple scenarios to ensure reliability and accuracy:
 - Input Handling: Verified the system's ability to process various complaint types, image formats, and text lengths.
-- AI Model Accuracy: Tested the image classification model with diverse complaint images to ensure correct categorization.
-- API Robustness: Ensured backend APIs handle valid and invalid requests gracefully.
+- AI Model Accuracy: Tested the local image classification model with diverse complaint images to ensure correct categorization.
+- API Robustness: Ensured backend APIs (including Gemini integration) handle valid and invalid requests gracefully.
 - User Experience: Assessed the frontend for usability and responsiveness.
 
 4.2 Types of Testing Conducted
@@ -62,7 +66,7 @@ The system was tested across multiple scenarios to ensure reliability and accura
    - Verified frontend components (e.g., form validation, image preview).
 2. Integration Testing
    - Ensured seamless interaction between frontend, backend, and AI model.
-   - Tested end-to-end complaint submission and categorization flow.
+   - Tested end-to-end complaint submission and Gemini-powered complaint generation.
 3. User Testing
    - Gathered feedback from test users on the ease of submitting complaints and understanding AI-generated categories.
    - Collected suggestions for UI/UX improvements.
@@ -71,7 +75,8 @@ The system was tested across multiple scenarios to ensure reliability and accura
    - Tested with multiple concurrent users to assess scalability.
 
 4.3 Results
-- Accuracy: The AI model accurately categorized over 90% of test complaint images.
+- Accuracy: The local AI model accurately categorized over 90% of test complaint images.
+- Gemini Output: Gemini generated clear, professional complaint messages based on model predictions.
 - Response Time: Average end-to-end complaint submission and categorization took less than 2 seconds.
 - Edge Cases: The system handled unsupported file types and incomplete submissions with appropriate error messages.
 - User Feedback: Test users found the interface intuitive and the AI categorization helpful for faster complaint resolution.
@@ -82,8 +87,8 @@ The system was tested across multiple scenarios to ensure reliability and accura
 5. Future Work
 1. Model Fine-tuning
    - Further train the image model with a larger, more diverse dataset for improved accuracy.
-2. Text Analysis Integration
-   - Incorporate NLP models to analyze complaint descriptions and suggest categories or urgency levels.
+2. Text Analysis Enhancement
+   - Enhance Gemini prompt engineering for even better complaint text.
 3. Admin Dashboard
    - Develop a comprehensive dashboard for administrators to track, filter, and resolve complaints efficiently.
 4. Notification System
@@ -95,7 +100,9 @@ The system was tested across multiple scenarios to ensure reliability and accura
 
 
 6. Conclusion
-InfraVision demonstrates the practical application of Generative AI and image recognition in automating and enhancing complaint management. The project showcases the integration of modern web technologies with AI models to deliver a robust, user-friendly solution for real-world organizational needs.
+InfraVision demonstrates the practical application of a local AI model and generative AI (Gemini) in automating and enhancing complaint management. The project showcases the integration of modern web technologies with AI models to deliver a robust, user-friendly solution for real-world organizational needs.
+
+You can try the live system at: https://infravison.onrender.com/
 
 [Insert concluding image or project summary graphic here]
 
