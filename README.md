@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # InfraVision - AI-Powered Infrastructure Monitoring
 
 InfraVision is a full-stack MERN application that uses AI to detect and classify infrastructure issues from images, automatically generating professional complaint messages for municipal authorities.
@@ -15,7 +14,7 @@ InfraVision is a full-stack MERN application that uses AI to detect and classify
 ## 🏗️ Architecture
 
 - **Frontend**: React.js with TensorFlow.js for client-side AI inference
-- **Backend**: Node.js + Express for image upload handling
+- **Backend**: Node.js + Express for image upload handling and AI-powered complaint generation
 - **AI Model**: TensorFlow.js model (Teachable Machine format) for image classification
 - **Styling**: Modern CSS with responsive design
 
@@ -42,10 +41,18 @@ InfraVision/
 │   │   └── index.js
 │   └── package.json
 ├── server/                 # Node.js backend
+│   ├── controllers/
+│   ├── routes/
+│   ├── services/
+│   ├── uploads/
+│   ├── feedback_uploads/
 │   ├── server.js
-│   ├── package.json
-│   └── .gitignore
-└── README.md
+│   └── package.json
+├── tm-my-image-model/      # Custom AI model files
+├── AI_SETUP.md             # AI setup instructions
+├── DEPLOYMENT.md           # Deployment guide
+├── README.md               # Project documentation
+└── InfraVision_Project_Submission.docx # Project report
 ```
 
 ## 🛠️ Installation & Setup
@@ -53,7 +60,7 @@ InfraVision/
 ### Prerequisites
 
 - Node.js (v16 or higher)
-- npm or yarn
+- npm (v8 or higher)
 
 ### Backend Setup
 
@@ -61,25 +68,27 @@ InfraVision/
 ```bash
 cd InfraVision/server
 ```
-
 2. Install dependencies:
 ```bash
 npm install
 ```
-
 3. Create a `.env` file:
-```bash
+```env
 PORT=5000
 NODE_ENV=development
+# WatsonX.ai Configuration (Primary AI Service)
+WATSONX_API_KEY=your_watsonx_api_key_here
+WATSONX_PROJECT_ID=your_watsonx_project_id_here
+WATSONX_URL=https://us-south.ml.cloud.ibm.com
+# OpenAI Configuration (Fallback AI Service)
+OPENAI_API_KEY=your_openai_api_key_here
 ```
-
 4. Start the server:
 ```bash
 npm start
 # or for development with auto-reload:
 npm run dev
 ```
-
 The backend will run on `http://localhost:5000`
 
 ### Frontend Setup
@@ -88,22 +97,19 @@ The backend will run on `http://localhost:5000`
 ```bash
 cd InfraVision/client
 ```
-
 2. Install dependencies:
 ```bash
 npm install
 ```
-
 3. Start the development server:
 ```bash
-npm start
+npm run dev
 ```
-
-The frontend will run on `http://localhost:3000`
+The frontend will run on `http://localhost:5173`
 
 ## 🚀 Usage
 
-1. **Open the Application**: Navigate to `http://localhost:3000`
+1. **Open the Application**: Navigate to `http://localhost:5173`
 2. **Wait for Model Loading**: The AI model will load automatically (you'll see a success message)
 3. **Upload an Image**: Drag and drop or click to select an infrastructure image
 4. **Analyze**: Click "Analyze Image" to run the AI classification
@@ -112,38 +118,7 @@ The frontend will run on `http://localhost:3000`
 
 ## 🌐 Deployment
 
-### Backend Deployment (Render.com)
-
-1. Create a new Web Service on Render
-2. Connect your GitHub repository
-3. Set build command: `npm install`
-4. Set start command: `npm start`
-5. Add environment variables:
-   - `PORT`: 5000
-   - `NODE_ENV`: production
-
-### Frontend Deployment (Vercel/Netlify)
-
-1. **Vercel**:
-   - Connect your GitHub repository
-   - Set build command: `npm run build`
-   - Set output directory: `build`
-   - Deploy
-
-2. **Netlify**:
-   - Connect your GitHub repository
-   - Set build command: `npm run build`
-   - Set publish directory: `build`
-   - Deploy
-
-### Environment Configuration
-
-For production, update the backend URL in the frontend:
-
-```javascript
-// In ComplaintCard.jsx, update the image URL
-src={`https://your-backend-url.com${imageUrl}`}
-```
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions, including environment variables, production build steps, and hosting recommendations.
 
 ## 🤖 AI Model Details
 
@@ -152,6 +127,8 @@ src={`https://your-backend-url.com${imageUrl}`}
 - **Classes**: 4 (Garbage, Damaged Road, Electric Pole, Manhole)
 - **Framework**: MobileNet-based architecture
 - **Inference**: Client-side using TensorFlow.js
+- **Model Files**: Located in `client/public/model/` and `tm-my-image-model/`
+- **Setup**: See [AI_SETUP.md](./AI_SETUP.md) for details on model usage and integration, including WatsonX.ai and OpenAI configuration.
 
 ## 📱 Mobile Responsiveness
 
@@ -184,16 +161,13 @@ The application is fully responsive and works on:
 1. **Model Loading Failed**:
    - Check if model files are in `client/public/model/`
    - Ensure all three files are present: `model.json`, `metadata.json`, `weights.bin`
-
 2. **CORS Errors**:
    - Ensure backend CORS is configured correctly
    - Check if frontend proxy is set to backend URL
-
 3. **Image Upload Issues**:
    - Check file size (max 10MB)
    - Ensure image format is JPG/PNG
    - Verify backend uploads directory exists
-
 4. **Prediction Errors**:
    - Check browser console for TensorFlow.js errors
    - Ensure model is loaded before prediction
@@ -201,26 +175,50 @@ The application is fully responsive and works on:
 
 ## 📄 License
 
-MIT License - see LICENSE file for details
+This project is licensed under the MIT License.
+
+```
+MIT License
+
+Copyright (c) 2024 InfraVision Team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
 
 ## 🤝 Contributing
 
+Contributions are welcome! Please open issues or submit pull requests for improvements and bug fixes.
+
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+2. Create your feature branch (`git checkout -b feature/YourFeature`)
+3. Commit your changes (`git commit -am 'Add new feature'`)
+4. Push to the branch (`git push origin feature/YourFeature`)
+5. Open a pull request
 
-## 📞 Support
+## 📞 Contact
 
-For support and questions:
-- Create an issue on GitHub
-- Check the troubleshooting section
-- Review the documentation
+For questions, suggestions, or support, please contact:
+
+- InfraVision Team
+- Email: s.shanmukhasaireddy13@gmail.com
+
 
 ---
 
-**InfraVision** - Making infrastructure monitoring smarter with AI! 🚀 
-=======
-# infravison
->>>>>>> 6a1cc6edeefe1473a357d8714c22a8fc777ed4a8
+**InfraVision** - Making infrastructure monitoring smarter with AI! 🚀
