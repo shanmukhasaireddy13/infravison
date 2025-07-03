@@ -262,7 +262,7 @@ const Home = () => {
     setInput('');
     setLoading(true);
     try {
-      const res = await fetch(CHAT_HELP_API_URL, {
+      const res = await fetch('https://7cf6-103-255-146-15.ngrok-free.app/api/chat-help', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
