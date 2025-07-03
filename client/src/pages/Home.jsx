@@ -573,8 +573,9 @@ const Home = () => {
                 <button
                   className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600"
                   onClick={async () => {
+                    console.log('Starting PDF generation process...');
                     try {
-                      const res = await fetch('/api/complaint-pdf', {
+                      const res = await fetch(`${BACKEND_URL}/api/complaint-pdf`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -582,7 +583,11 @@ const Home = () => {
                           imageBase64
                         })
                       });
-                      if (!res.ok) throw new Error('Failed to generate PDF');
+                      if (!res.ok) {
+                        console.error('PDF generation failed:', res.statusText);
+                        throw new Error('Failed to generate PDF');
+                      }
+                      console.log('PDF generated successfully.');
                       const blob = await res.blob();
                       const url = window.URL.createObjectURL(blob);
                       const a = document.createElement('a');
@@ -593,7 +598,8 @@ const Home = () => {
                       a.remove();
                       window.URL.revokeObjectURL(url);
                     } catch (err) {
-                      alert('Failed to download PDF.');
+                      console.error('Error downloading PDF:', err);
+                      alert('Failed to download PDF. Please check the console for more details.');
                     }
                   }}
                   disabled={!(localLang === 'en' ? englishComplaint : localComplaint)}
