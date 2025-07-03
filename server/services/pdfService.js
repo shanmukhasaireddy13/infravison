@@ -25,36 +25,59 @@ function generateComplaintPDF(complaintText, imageBase64, language = 'en') {
       let textFont = 'Helvetica';
       let boldFont = 'Helvetica-Bold';
       
-      // For non-English languages, try different approaches
+      // For non-English languages, use script-specific Noto fonts
       if (language !== 'en') {
         const downloadAndRegisterFont = async (url, name) => {
           try {
-            console.log(`Downloading font: ${name}`);
+            console.log(`Downloading font: ${name} from ${url}`);
             const res = await fetch(url);
+            if (!res.ok) {
+              throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+            }
             const arrayBuffer = await res.arrayBuffer();
             const buffer = Buffer.from(arrayBuffer);
             doc.registerFont(name, buffer);
             console.log(`Successfully registered font: ${name}`);
             return name;
           } catch (error) {
-            console.error('Error downloading font:', error);
+            console.error(`Error downloading font ${name}:`, error.message);
             return null;
           }
         };
 
-        // Try to download NotoSans font for better Unicode support
-        const notoSans = await downloadAndRegisterFont(
-          'https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSans/NotoSans-Regular.ttf',
-          'NotoSans'
-        );
+        // Language-specific font URLs - using Google Fonts API for better reliability
+        const fontUrls = {
+          'te': 'https://fonts.gstatic.com/s/notosanstelugu/v26/6xK5dSxaJVCqxLHJG59xKr_YKMG5OjGsyp-W.ttf',
+          'hi': 'https://fonts.gstatic.com/s/notosansdevanagari/v21/TuGJUVpzXI5FQtUF_LGzWI3f6r3OhiNq9xPiK6ZAKw.ttf',
+          'ta': 'https://fonts.gstatic.com/s/notosanstamil/v27/E213_cG_VMAhpgdK_-0qYdNKt-0VCGZWF8.ttf',
+          'kn': 'https://fonts.gstatic.com/s/notosanskannada/v26/3qTqojI1UB4OiuwjOPcZ5sJpVyxQw3M2X9U.ttf',
+          'ml': 'https://fonts.gstatic.com/s/notosansmalayalam/v26/3qTjojK-UtU6pnYXP7QcAKONNtJTlYQHhRo.ttf'
+        };
 
-        if (notoSans) {
-          textFont = notoSans;
-          boldFont = notoSans;
-          titleFont = notoSans;
-          console.log('Using NotoSans font for Unicode support');
+        const fontUrl = fontUrls[language];
+        if (fontUrl) {
+          const scriptFont = await downloadAndRegisterFont(fontUrl, `Noto${language.toUpperCase()}`);
+          if (scriptFont) {
+            textFont = scriptFont;
+            boldFont = scriptFont;
+            titleFont = scriptFont;
+            console.log(`Using ${scriptFont} font for ${language} language support`);
+          } else {
+            console.warn(`Failed to download ${language} font, trying fallback`);
+            // Try a fallback generic Noto Sans
+            const fallbackFont = await downloadAndRegisterFont(
+              'https://fonts.gstatic.com/s/notosans/v27/o-0IIpQlx3QUlC5A4PNjXhFVZNyB.ttf',
+              'NotoSansFallback'
+            );
+            if (fallbackFont) {
+              textFont = fallbackFont;
+              boldFont = fallbackFont;
+              titleFont = fallbackFont;
+              console.log('Using fallback NotoSans font');
+            }
+          }
         } else {
-          console.warn('Failed to download NotoSans, using default Helvetica');
+          console.warn(`No specific font available for language: ${language}`);
         }
       }
       const buffers = [];
