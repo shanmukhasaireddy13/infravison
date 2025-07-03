@@ -7,39 +7,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Cache for downloaded fonts
-let fontsCache = {};
 
-// Download and cache Google Noto Sans font
-async function downloadNotoFont() {
-  return new Promise((resolve) => {
-    const fontUrl = 'https://fonts.gstatic.com/s/notosans/v36/o-0IIpQlx3QUlC5A4PNjXhFVZNyB.woff2';
-    const fontPath = path.join(__dirname, 'fonts', 'NotoSans-Regular.woff2');
-    
-    // Check if font already exists
-    if (fs.existsSync(fontPath)) {
-      resolve(fontPath);
-      return;
-    }
-    
-    // Create fonts directory if it doesn't exist
-    if (!fs.existsSync(path.dirname(fontPath))) {
-      fs.mkdirSync(path.dirname(fontPath), { recursive: true });
-    }
-    
-    const file = fs.createWriteStream(fontPath);
-    https.get(fontUrl, (response) => {
-      response.pipe(file);
-      file.on('finish', () => {
-        file.close();
-        resolve(fontPath);
-      });
-    }).on('error', () => {
-      // If download fails, return null to use fallback
-      resolve(null);
-    });
-  });
-}
 
 function generateComplaintPDF(complaintText, imageBase64, language = 'en') {
   return new Promise(async (resolve, reject) => {
@@ -88,9 +56,6 @@ function generateComplaintPDF(complaintText, imageBase64, language = 'en') {
         } else {
           console.warn('Failed to download NotoSans, using default Helvetica');
         }
-      } catch (err) {
-        console.warn('Font registration failed:', err.message);
-      }
       }
       const buffers = [];
       doc.on('data', buffers.push.bind(buffers));
