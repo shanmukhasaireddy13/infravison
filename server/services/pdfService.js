@@ -25,59 +25,45 @@ function generateComplaintPDF(complaintText, imageBase64, language = 'en') {
       let textFont = 'Helvetica';
       let boldFont = 'Helvetica-Bold';
       
-      // For non-English languages, use script-specific Noto fonts
+      // For non-English languages, try to use a simpler font approach
       if (language !== 'en') {
-        const downloadAndRegisterFont = async (url, name) => {
-          try {
-            console.log(`Downloading font: ${name} from ${url}`);
-            const res = await fetch(url);
-            if (!res.ok) {
-              throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-            }
-            const arrayBuffer = await res.arrayBuffer();
-            const buffer = Buffer.from(arrayBuffer);
-            doc.registerFont(name, buffer);
-            console.log(`Successfully registered font: ${name}`);
-            return name;
-          } catch (error) {
-            console.error(`Error downloading font ${name}:`, error.message);
-            return null;
-          }
-        };
-
-        // Language-specific font URLs - using Google Fonts API for better reliability
-        const fontUrls = {
-          'te': 'https://fonts.gstatic.com/s/notosanstelugu/v26/6xK5dSxaJVCqxLHJG59xKr_YKMG5OjGsyp-W.ttf',
-          'hi': 'https://fonts.gstatic.com/s/notosansdevanagari/v21/TuGJUVpzXI5FQtUF_LGzWI3f6r3OhiNq9xPiK6ZAKw.ttf',
-          'ta': 'https://fonts.gstatic.com/s/notosanstamil/v27/E213_cG_VMAhpgdK_-0qYdNKt-0VCGZWF8.ttf',
-          'kn': 'https://fonts.gstatic.com/s/notosanskannada/v26/3qTqojI1UB4OiuwjOPcZ5sJpVyxQw3M2X9U.ttf',
-          'ml': 'https://fonts.gstatic.com/s/notosansmalayalam/v26/3qTjojK-UtU6pnYXP7QcAKONNtJTlYQHhRo.ttf'
-        };
-
-        const fontUrl = fontUrls[language];
-        if (fontUrl) {
-          const scriptFont = await downloadAndRegisterFont(fontUrl, `Noto${language.toUpperCase()}`);
-          if (scriptFont) {
-            textFont = scriptFont;
-            boldFont = scriptFont;
-            titleFont = scriptFont;
-            console.log(`Using ${scriptFont} font for ${language} language support`);
-          } else {
-            console.warn(`Failed to download ${language} font, trying fallback`);
-            // Try a fallback generic Noto Sans
-            const fallbackFont = await downloadAndRegisterFont(
-              'https://fonts.gstatic.com/s/notosans/v27/o-0IIpQlx3QUlC5A4PNjXhFVZNyB.ttf',
-              'NotoSansFallback'
-            );
-            if (fallbackFont) {
-              textFont = fallbackFont;
-              boldFont = fallbackFont;
-              titleFont = fallbackFont;
-              console.log('Using fallback NotoSans font');
+        console.log(`Generating PDF for language: ${language}`);
+        
+        // Try to use system fonts that might support Unicode better
+        try {
+          // Check if Arial Unicode MS is available (common on Windows)
+          const systemFontPaths = [
+            'C:/Windows/Fonts/arial.ttf',
+            'C:/Windows/Fonts/calibri.ttf',
+            '/System/Library/Fonts/Arial.ttf',
+            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'
+          ];
+          
+          let fontRegistered = false;
+          for (const fontPath of systemFontPaths) {
+            if (fs.existsSync(fontPath)) {
+              try {
+                doc.registerFont('SystemUnicodeFont', fontPath);
+                textFont = 'SystemUnicodeFont';
+                boldFont = 'SystemUnicodeFont';
+                titleFont = 'SystemUnicodeFont';
+                fontRegistered = true;
+                console.log(`Successfully registered system font: ${fontPath}`);
+                break;
+              } catch (fontErr) {
+                console.warn(`Failed to register font ${fontPath}:`, fontErr.message);
+              }
             }
           }
-        } else {
-          console.warn(`No specific font available for language: ${language}`);
+          
+          if (!fontRegistered) {
+            console.log('No system Unicode font found, using Helvetica with text as-is');
+            // Just use Helvetica and render the text as-is
+            // PDFKit might handle some Unicode characters even with basic fonts
+          }
+        } catch (err) {
+          console.warn('Font registration failed:', err.message);
+          console.log('Using default Helvetica font');
         }
       }
       const buffers = [];
