@@ -36,6 +36,22 @@ InfraVision is a comprehensive full-stack MERN application that revolutionizes i
 - **Copy to Clipboard**: Easy sharing of complaint text
 - **Clear All Functionality**: Reset all data without page refresh
 
+## 📸 Screenshots
+
+### Web Interface Overview
+
+![Main Dashboard](screenshots/Picture1.png)
+*Main dashboard showing image upload, AI analysis, and complaint generation features*
+
+![AI Analysis Results](screenshots/Picture2.png)
+*AI-powered infrastructure issue detection with confidence scores and category classification*
+
+![Multi-Language Complaint Generation](screenshots/Picture3.png)
+*Professional complaint letter generation in multiple languages with AI assistant*
+
+![Complete Workflow](screenshots/Picture4.png)
+*End-to-end workflow from image upload to PDF generation with location detection*
+
 ## 🏗️ Technical Architecture
 
 ### **Frontend Stack**
